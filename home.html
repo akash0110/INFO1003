@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel="stylesheet">
+    <link href="css/lib/vuetify.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <test-component></test-component>
+    </div>
+    <script src="js/lib/vue.min.js"></script>
+    <script src="js/lib/vuetify.min.js"></script>
+    <script src="js/lib/httpVueLoader.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            components: {
+                'test-component': httpVueLoader('/components/test-component.vue')
+            }
+        });
+    </script>
+</body>
+</html>
