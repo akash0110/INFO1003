@@ -1,0 +1,244 @@
+<DOCTYPE! HTML>
+<html>
+	<head>
+		<p>Brick breakers!</p>
+	</head>
+
+	<body>
+		<h1>Fun times!</h1>
+
+		<canvas id="gameCanvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+
+		<script type="text/javascript">
+
+			//setup the canvas on which game is played and the rendering tool
+			var gameScreen = document.getElementById("gameCanvas");
+			var renderingTool = gameScreen.getContext("2d");
+
+			//x and y coordinates of the ball on the game screen
+			var ballX = gameScreen.width / 2;
+			var ballY = gameScreen.height - 30;
+
+			//radius of the ball
+			ballRad = 10;
+
+			//move speed of the ball and platform
+			var moveX = 2;
+			var moveY = -2;
+
+			//dimensions and x coordinate of the platform
+			var platformWidth = 80;
+			var platformHeight = 15;
+			var platformX = (gameScreen.width - platformWidth) / 2;
+
+			//move speed of the platform
+			var platformSpeed = 8;
+
+			//brick dimensions
+			var brickWidth = 60;
+			var brickHeight = 20;
+
+			var score = 0;
+
+			//brick coordinates 
+			var brickGrid = [];
+
+			for (var i = 0; i < 4; i++) {
+				brickGrid[i] = [];
+				for (var j = 0; j < 6; j++) {
+
+					//members storing x coord, y coord and flag that says if the brick has been hit or not
+					brickGrid[i][j] = { brickX: 0, brickY: 0, hitFlag: 1}
+				}
+			}
+
+			//booleans for keyboard functionality in the game
+			var moveLeft = false;
+			var moveRight = false;
+
+			var colourDecider = Math.floor(Math.random() * 5) + 1;
+			var colour = '';
+
+			switch (colourDecider) {
+
+				case 1: colour = "#FF0000";
+						break;
+
+				case 2: colour = "#00FF00";
+						break;
+
+				case 3: colour = "#0000FF";
+						break;
+
+				case 4: colour = "#FFF000";
+						break;
+
+				case 5: colour = "#000000";
+						break;
+			}
+
+			function renderGame() {
+
+				//clear contents of canvas of previous iteration
+				renderingTool.clearRect(0, 0, gameScreen.width, gameScreen.height);
+
+				//draw the platform, the ball, the bricks and the score
+				renderPlatform();
+				renderBall();
+				renderBricks();
+				renderScore();
+
+				//move the platform and the ball
+				movePlatform();
+				moveBall();
+
+				//check for any collisions
+				detectCollsions();
+							
+			}
+
+			//add event listeners for detecting key presses by the user
+			document.addEventListener("keydown", keyPressedHandler, false);
+			document.addEventListener("keyup", keyReleasedHandler, false);
+
+			//handler for key press events
+			function keyPressedHandler(p) {
+
+				if (p.keyCode == 39) moveRight = true;
+				else if (p.keyCode == 37) moveLeft = true;
+			} 
+
+			//handler for key release events
+			function keyReleasedHandler(p) {
+
+				//39 code for right arrow key
+				if (p.keyCode == 39) moveRight = false;
+
+				//37 code for left arrow key
+				else if (p.keyCode == 37) moveLeft = false;
+			}
+
+			setInterval(renderGame, 10);
+
+			function renderBall() {
+
+				renderingTool.beginPath();
+
+				//set position and colour of ball then 
+				//render it
+				renderingTool.arc(ballX, ballY, ballRad, 0, Math.PI*2);
+				renderingTool.fillStyle = colour;
+				renderingTool.fill();
+
+				renderingTool.closePath();
+
+			}
+
+			function renderPlatform() {
+
+				renderingTool.beginPath();
+
+				//set position and colour of platform then 
+				//render it
+				renderingTool.rect(platformX, gameScreen.height - platformHeight, platformWidth, platformHeight);
+				renderingTool.fillStyle = colour;
+				renderingTool.fill();
+
+				renderingTool.closePath();
+			}
+
+			function renderBricks() {
+
+				for (var i = 0; i < 4; i++) {
+					for (var j = 0; j < 6; j++) {
+
+						//members storing x coord, y coord and flag that says if the brick has been hit or not
+						brickGrid[i][j].brickX = (i * (brickWidth + 10)) + 110;
+						brickGrid[i][j].brickY = (j * (brickHeight + 10)) + 20;
+
+						if (brickGrid[i][j].hitFlag == 1) {
+							renderingTool.beginPath();
+            				renderingTool.rect(brickGrid[i][j].brickX, brickGrid[i][j].brickY, brickWidth, brickHeight);
+            				renderingTool.fillStyle = colour;
+            				renderingTool.fill();
+            				renderingTool.closePath();
+            			}
+					}
+				}
+			}
+
+			function renderScore() {
+
+				renderingTool.font = "16px Times New Roman";
+    			renderingTool.fillStyle = "#000000";
+    			renderingTool.fillText("Score: " + score, 8, 20);
+			}
+
+			function moveBall() {
+
+				//check postion of ball and bounce off left or right edges of game screen
+				if (ballX + moveX > gameScreen.width - ballRad || ballX + moveX < ballRad) {
+					moveX = -moveX;
+				}
+
+				//check postion of ball and bounce off top and bottom edges of screen
+				if (ballY + moveY < ballRad) {
+					moveY = -moveY;
+
+				//check if ball will go beyond the screen at the bottom
+				} else if (ballY + moveY > gameScreen.height - platformHeight - ballRad) {
+
+					//check if ball hit by platform
+					if (ballX > platformX && ballX < platformX + platformWidth) {
+						moveY = -moveY;
+
+					//game over if the ball hits the bottom of the game screen
+					} else {
+						alert("Game over!");
+						document.location.reload();
+					}
+				}
+
+				//update the new position of the ball
+				ballX += moveX;
+				ballY += moveY;
+			}
+
+			function movePlatform() {
+
+				//move the platform to the right if there is still room
+				if (moveRight && platformX < gameScreen.width - platformWidth) platformX += platformSpeed;
+
+				//move the platform to the left if there is still room
+				else if (moveLeft && platformX > 0) platformX -= platformSpeed;
+			}
+
+			function detectCollsions() {
+
+				for (var i = 0; i < 4; i++) {
+					for (var j = 0; j < 6; j++) {
+
+						var brick = brickGrid[i][j];
+
+						//for every non hit brick in the grid check if ball hits it in this iteration of the rendering
+						if (brick.hitFlag == 1) {
+							if(ballX + ballRad > brick.brickX && ballX + ballRad < brick.brickX + brickWidth && ballY + ballRad > brick.brickY && ballY + ballRad < brick.brickY + brickHeight) {
+
+                    			moveY = -moveY;
+                    			brick.hitFlag = 0;
+                    			score++;
+
+                    			//finish game if all bricks destroyed
+                    			if (score == 24) {
+                    				alert("You won!");
+                    				document.location.reload();
+                    			}
+                			}
+						}
+					}
+				}
+			}
+
+		</script>
+	</body>
+</html>

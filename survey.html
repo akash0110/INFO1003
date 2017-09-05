@@ -1,0 +1,111 @@
+<DOCTYPE! HTML>
+<html>
+	<head>
+		<title>Happiness survey</title>
+	</head>
+	<body>
+		<h3>Take a quick survey to see how happy you are.</h3>
+		<form name="myForm">
+			<ol>
+				<li>Am I satisfied with the way I'm currently living?</li><br>
+				<input type="radio" name="ques1" value="2"> Yes<br>
+				<input type="radio" name="ques1" value="0"> No<br>
+				<input type="radio" name="ques1" value="1"> Maybe<br><br><br>
+
+				<li>Have I formed any good relationships?</li><br>
+				<input type="radio" name="ques2" value="2"> Yes<br>
+				<input type="radio" name="ques2" value="0"> No<br>
+				<input type="radio" name="ques2" value="1"> Maybe<br><br><br>
+
+				<li>How often do I open up to others?</li><br>
+				<input type="radio" name="ques3" value="0"> Never<br>
+				<input type="radio" name="ques3" value="1"> Once or twice a month<br>
+				<input type="radio" name="ques3" value="2"> Once or twice a week<br>
+				<input type="radio" name="ques3" value="3"> Three times a week or more<br>
+				<input type="radio" name="ques3" value="4"> About once a day<br><br><br>
+
+				<li>Are you kind towards other people? If so, how much?</li><br>
+				<input type="radio" name="ques4" value="0"> Never<br>
+				<input type="radio" name="ques4" value="1"> Once or twice a month<br>
+				<input type="radio" name="ques4" value="2"> Once or twice a week<br>
+				<input type="radio" name="ques4" value="3"> Three times a week or more<br>
+				<input type="radio" name="ques4" value="4"> About once a day<br><br><br>
+
+				<li>Do you have enough exercise in your lifestyle?</li><br>
+				<input type="radio" name="ques5" value="0"> Never<br>
+				<input type="radio" name="ques5" value="1"> Once or twice a month<br>
+				<input type="radio" name="ques5" value="2"> Once or twice a week<br>
+				<input type="radio" name="ques5" value="3"> Three times a week or more<br>
+				<input type="radio" name="ques5" value="4"> About once a day<br><br><br>
+
+				<li>I am aware of my strengths and virtues.</li><br>
+				<label id="strengths">Rating</label><br>
+				<input type="range" id="r1" min="0" max="4" onchange="showMeaning(this.value, 'strengths');"><br><br><br>
+				
+				<li>I feel good when I use my strengths for a greater purpose.</li><br>
+				<label id="purpose">Rating</label><br>
+				<input type="range" id="r2" min="0" max="4" onchange="showMeaning(this.value, 'purpose');"><br><br><br>
+
+				<li>I'm not easily worried by thinking of the past or future.</li><br>
+				<label id="anxiety">Rating</label><br>
+				<input type="range" id="r3" min="0" max="4" onchange="showMeaning(this.value, 'anxiety');"><br><br><br>
+
+				<li>I consider myself to be optimistic.</li><br>
+				<label id="optimism">Rating</label><br>
+				<input type="range" id="r4" min="0" max="4" onchange="showMeaning(this.value, 'optimism');"><br><br><br>
+
+				<li>I consider my life to be meaningful.</li><br>
+				<label id="meaning">Rating</label><br>
+				<input type="range" id="r5" min="0" max="4" onchange="showMeaning(this.value, 'meaning');"><br><br><br>
+			</ol>
+
+			<input type="button" value="Done!" onclick="calculateScore(document.myForm);">
+
+		</form>
+		<script>
+
+			//shows what the rating signifies for each range slider
+			function showMeaning(rating, id) {
+				var num = parseInt(rating);
+
+				switch (num) {
+
+					case 0: document.getElementById(id).innerHTML = 'Disagree';
+							break;
+					case 1: document.getElementById(id).innerHTML = 'Disagree slightly';
+							break;
+					case 2: document.getElementById(id).innerHTML = 'Neutral';
+							break;
+					case 3: document.getElementById(id).innerHTML = 'Maybe';
+							break;
+					case 4: document.getElementById(id).innerHTML = 'Agree';
+							break;
+					default: document.getElementById(id).innerHTML = 'Rating';
+							break;
+				}
+				
+			}
+
+			//score of survey used to calculate results
+			var surveyScore = 0;
+
+			function calculateScore(form) {
+
+				for (var i = 0; i < form.elements.length; i++) {
+					if (form.elements[i].type == 'radio') {
+						alert(form.elements[i].length);
+
+						for (var j = 0; j < form.elements[i].length; j++) {
+						//	if (form.elements[i][j].checked == true) {
+							surveyScore += parseInt(form.elements[i][j].value);
+						//}
+						} 
+					} else {
+						surveyScore += parseInt(form.elements[i].value);
+					}
+				}
+				alert(surveyScore);
+			}
+		</script>
+	</body>
+</html>
