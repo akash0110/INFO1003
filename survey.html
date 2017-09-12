@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>Happiness survey</title>
+		<!-- <link href="styles.css" rel="stylesheet" type="text/css"/> -->
 	</head>
 	<body>
 		<h3>Take a quick survey to see how happy you are.</h3>
@@ -59,7 +60,7 @@
 				<input type="range" id="r5" min="0" max="4" onchange="showMeaning(this.value, 'meaning');"><br><br><br>
 			</ol>
 
-			<input type="button" value="Done!" onclick="calculateScore(document.myForm);">
+			<button onclick="calculateScore(document.myForm);" style="height:50px; width:100px; margin-left:50%; background-color:blue; color:white;">Done!</button>
 
 		</form>
 		<script>
@@ -86,26 +87,39 @@
 				
 			}
 
+			//Displayes appropriate 
+			function displayMessage(score) {
+
+				if (score >= 28) alert("Spread the joy and make someone else happy!");
+				else if (score >= 19) alert("Keep up being happy!");
+				else if (score >= 10) alert("Smile, be happy!");
+				else alert("Cheer up mate, everything's gonna be fine!");
+			}
+
 			//score of survey used to calculate results
 			var surveyScore = 0;
 
+			//calculates the summative score of the user 
 			function calculateScore(form) {
 
-				for (var i = 0; i < form.elements.length; i++) {
-					if (form.elements[i].type == 'radio') {
-						alert(form.elements[i].length);
+				//iterate over the elements of the form to sum up score
+				for (var i = 0; i < form.elements.length - 1; i++) {
 
-						for (var j = 0; j < form.elements[i].length; j++) {
-						//	if (form.elements[i][j].checked == true) {
-							surveyScore += parseInt(form.elements[i][j].value);
-						//}
-						} 
+					if (form.elements[i].type == 'radio') {
+
+						if (form.elements[i].checked) {
+							surveyScore += parseInt(form.elements[i].value);
+						}
+						
 					} else {
 						surveyScore += parseInt(form.elements[i].value);
 					}
 				}
-				alert(surveyScore);
+				displayMessage(surveyScore);
+				//alert(surveyScore);
 			}
+
+
 		</script>
 	</body>
 </html>
